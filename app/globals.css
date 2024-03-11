@@ -222,7 +222,7 @@ body {
     }
 
     .select-item {
-        @apply py-3 cursor-pointer  focus:bg-primary-50;
+        @apply cursor-pointer  focus:bg-primary-50;
     }
 
     .toggle-switch {
