@@ -1,4 +1,4 @@
-import React, { startTransition } from 'react';
+import React, { startTransition, useEffect } from 'react';
 import { ICategory } from '@/lib/database/models/category.model';
 import { useState } from 'react';
 
@@ -21,6 +21,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
+import {
+    createCategory,
+    getAllCategories,
+} from '@/lib/database/actions/category.actions';
+import { formatCategory } from '@/lib/utils';
 
 type DropdownProps = {
     onChangeHandler?: () => void;
@@ -32,8 +37,19 @@ const Dropdown = ({ onChangeHandler, currentValue }: DropdownProps) => {
     const [newCategory, setNewCategory] = useState('');
 
     const handleAddCategory = () => {
-        console.log('hit: ' + newCategory);
+        const categoryName = formatCategory(newCategory);
+        createCategory({ categoryName }).then((category: ICategory) => {
+            setCategories((prevState) => [...prevState, category]);
+        });
     };
+
+    useEffect(() => {
+        const getCategories = async () => {
+            const categoriesArr = await getAllCategories();
+            categoriesArr && setCategories(categoriesArr as ICategory[]);
+        };
+        getCategories();
+    }, []);
 
     return (
         <Dialog>
@@ -47,7 +63,7 @@ const Dropdown = ({ onChangeHandler, currentValue }: DropdownProps) => {
                             <SelectItem
                                 key={category._id}
                                 value={category._id}
-                                className='select-item'>
+                                className='select-item py-3'>
                                 {category.name}
                             </SelectItem>
                         );

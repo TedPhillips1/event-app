@@ -197,12 +197,6 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                                 <FormLabel>Price</FormLabel>
                                 <FormControl>
                                     <div className='flex flex-row gap-2 items-center'>
-                                        {/* <Image
-                                            src='/assets/icons/pound.svg'
-                                            alt='pound'
-                                            width={24}
-                                            height={24}
-                                        /> */}
                                         <p className='p-medium-24 text-gray-400'>
                                             £
                                         </p>
@@ -225,6 +219,12 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                                                             </label>
                                                             <Checkbox
                                                                 id='isFree'
+                                                                onCheckedChange={
+                                                                    field.onChange
+                                                                }
+                                                                checked={
+                                                                    field.value
+                                                                }
                                                                 // not working
                                                                 className={clsx(
                                                                     'h-5 w-5 border-2',

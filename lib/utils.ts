@@ -103,3 +103,20 @@ export const handleError = (error: unknown) => {
     console.error(error);
     throw new Error(typeof error === 'string' ? error : JSON.stringify(error));
 };
+
+export function formatCategory(newCategory: string) {
+    newCategory.trim();
+
+    const lowercaseWords = ['and', 'for', 'let', 'to'];
+
+    const words = newCategory.split(/\s+/);
+    const capitalizedWords = words.map((word) => {
+        if (!lowercaseWords.includes(word.toLowerCase())) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        } else {
+            return word.toLowerCase();
+        }
+    });
+
+    return capitalizedWords.join(' ');
+}
