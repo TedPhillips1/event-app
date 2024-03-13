@@ -265,8 +265,9 @@ body {
 .react-datepicker__input-container input {
     background-color: transparent;
     width: 100%;
-    outline: none;
-    margin-left: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    padding: 0.5rem;
 }
 
 .react-datepicker__day--selected {

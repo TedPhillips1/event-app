@@ -66,6 +66,7 @@ const Dropdown = ({ onChangeHandler, currentValue }: DropdownProps) => {
                             type='text'
                             placeholder='Category Name'
                             onChange={(e) => setNewCategory(e.target.value)}
+                            className='placeholder:text-gray-500 text-gray-950'
                         />
                     </DialogDescription>
                 </DialogHeader>

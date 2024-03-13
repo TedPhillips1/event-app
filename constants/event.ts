@@ -10,3 +10,6 @@ export const eventDefaultValues = {
     isFree: false,
     url: '',
 };
+
+export const DESCRIPTION_LENGTH = 400;
+export const LOCATION_LENGTH = 400;
