@@ -23,6 +23,9 @@ import { Textarea } from '../ui/textarea';
 import FileUploader from './FileUploader';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import Image from 'next/image';
+import { Checkbox } from '../ui/checkbox';
+import clsx from 'clsx';
 
 type EventFormProps = {
     userId: string;
@@ -135,31 +138,143 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                     )}
                 />
 
-                <FormField
-                    control={form.control}
-                    name='startDateTime'
-                    render={({ field }) => (
-                        <FormItem className='w-full'>
-                            <FormLabel>Start Date & Time</FormLabel>
-                            <FormControl>
-                                <DatePicker
-                                    selected={field.value}
-                                    onChange={(date: Date) =>
-                                        field.onChange(date)
-                                    }
-                                    showTimeSelect
-                                    timeIntervals={30}
-                                    timeCaption='Time'
-                                    wrapperClassName='datePicker'
-                                    dateFormat='MMMM d, yyyy h:mm aa'
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <div className='flex flex-col gap-5 md:flex-row'>
+                    <FormField
+                        control={form.control}
+                        name='startDateTime'
+                        render={({ field }) => (
+                            <FormItem className='w-full'>
+                                <FormLabel>Start Date & Time</FormLabel>
+                                <FormControl>
+                                    <DatePicker
+                                        selected={field.value}
+                                        onChange={(date: Date) =>
+                                            field.onChange(date)
+                                        }
+                                        showTimeSelect
+                                        timeIntervals={30}
+                                        timeCaption='Time'
+                                        wrapperClassName='datePicker'
+                                        dateFormat='MMMM d, yyyy h:mm aa'
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-                <Button type='submit'>Submit</Button>
+                    <FormField
+                        control={form.control}
+                        name='endDateTime'
+                        render={({ field }) => (
+                            <FormItem className='w-full'>
+                                <FormLabel>End Date & Time</FormLabel>
+                                <FormControl>
+                                    <DatePicker
+                                        selected={field.value}
+                                        onChange={(date: Date) =>
+                                            field.onChange(date)
+                                        }
+                                        showTimeSelect
+                                        timeIntervals={30}
+                                        timeCaption='Time'
+                                        wrapperClassName='datePicker'
+                                        dateFormat='MMMM d, yyyy h:mm aa'
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <div className='flex flex-col gap-5 md:flex-row'>
+                    <FormField
+                        control={form.control}
+                        name='price'
+                        render={({ field }) => (
+                            <FormItem className='w-full'>
+                                <FormLabel>Price</FormLabel>
+                                <FormControl>
+                                    <div className='flex flex-row gap-2 items-center'>
+                                        {/* <Image
+                                            src='/assets/icons/pound.svg'
+                                            alt='pound'
+                                            width={24}
+                                            height={24}
+                                        /> */}
+                                        <p className='p-medium-24 text-gray-400'>
+                                            £
+                                        </p>
+                                        <Input
+                                            type='number'
+                                            placeholder='Price'
+                                            {...field}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name='isFree'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <div className='flex items-center h-full ml-2'>
+                                                            <label
+                                                                htmlFor='isFree'
+                                                                className='whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+                                                                Free
+                                                            </label>
+                                                            <Checkbox
+                                                                id='isFree'
+                                                                // not working
+                                                                className={clsx(
+                                                                    'h-5 w-5 border-2',
+                                                                    field.value
+                                                                        ? 'border-primary-500'
+                                                                        : 'border-gray-200'
+                                                                )}
+                                                            />
+                                                        </div>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name='url'
+                        render={({ field }) => (
+                            <FormItem className='w-full'>
+                                <FormLabel>Event URL</FormLabel>
+                                <FormControl>
+                                    <Input placeholder='Event URL' {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    URL for the Event
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <Button
+                    type='submit'
+                    size='lg'
+                    disabled={form.formState.isSubmitting}
+                    className='h-[54px] p-regular-16 col-span-2 w-full'>
+                    {form.formState.isSubmitting
+                        ? 'Submitting...'
+                        : type === 'CREATE'
+                        ? 'Create Event'
+                        : 'Update Event'}
+                </Button>
             </form>
         </Form>
     );
