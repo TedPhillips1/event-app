@@ -6,6 +6,11 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { eventFormSchema } from '@/lib/formValidator';
 import { eventDefaultValues, DESCRIPTION_LENGTH } from '@/constants/event';
+import clsx from 'clsx';
+import { useUploadThing } from '@/lib/uploadthing';
+import { handleError } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { createEvent } from '@/lib/database/actions/event.actions';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,9 +28,7 @@ import { Textarea } from '../ui/textarea';
 import FileUploader from './FileUploader';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Image from 'next/image';
 import { Checkbox } from '../ui/checkbox';
-import clsx from 'clsx';
 
 type EventFormProps = {
     userId: string;
@@ -34,17 +37,42 @@ type EventFormProps = {
 
 const EventForm = ({ userId, type }: EventFormProps) => {
     const [files, setFiles] = useState<File[]>([]);
+    const { startUpload } = useUploadThing('imageUploader');
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof eventFormSchema>>({
         resolver: zodResolver(eventFormSchema),
         defaultValues: eventDefaultValues,
     });
 
-    function onSubmit(values: z.infer<typeof eventFormSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values);
-    }
+    const onSubmit = async (values: z.infer<typeof eventFormSchema>) => {
+        let uploadedImageUrl = values.imageUrl;
+
+        if (files.length > 0) {
+            const uploadedImages = await startUpload(files);
+
+            if (!uploadedImages) return;
+
+            uploadedImageUrl = uploadedImages[0].url;
+        }
+
+        if (type === 'CREATE') {
+            try {
+                const newEvent = await createEvent({
+                    event: { ...values, imageUrl: uploadedImageUrl },
+                    userId,
+                    path: '/profile',
+                });
+
+                if (newEvent) {
+                    form.reset();
+                    router.push(`/events/${newEvent._id}`);
+                }
+            } catch (err) {
+                handleError(err);
+            }
+        }
+    };
 
     return (
         <Form {...form}>
@@ -83,43 +111,45 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                     )}
                 />
 
-                <FormField
-                    control={form.control}
-                    name='description'
-                    render={({ field }) => (
-                        <FormItem className='w-full'>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl className='h-48'>
-                                <Textarea
-                                    placeholder='Description'
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormDescription>
-                                Max Length {DESCRIPTION_LENGTH} Characters
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <div className='flex flex-col gap-5 md:flex-row'>
+                    <FormField
+                        control={form.control}
+                        name='description'
+                        render={({ field }) => (
+                            <FormItem className='w-full'>
+                                <FormLabel>Description</FormLabel>
+                                <FormControl className='min-h-48'>
+                                    <Textarea
+                                        placeholder='Description'
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormDescription>
+                                    Max Length {DESCRIPTION_LENGTH} Characters
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-                <FormField
-                    control={form.control}
-                    name='imageUrl'
-                    render={({ field }) => (
-                        <FormItem className='w-full'>
-                            <FormLabel>Image</FormLabel>
-                            <FormControl>
-                                <FileUploader
-                                    onFieldChange={field.onChange}
-                                    imageUrl={field.value}
-                                    setFiles={setFiles}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                    <FormField
+                        control={form.control}
+                        name='imageUrl'
+                        render={({ field }) => (
+                            <FormItem className='w-full'>
+                                <FormLabel>Image</FormLabel>
+                                <FormControl>
+                                    <FileUploader
+                                        onFieldChange={field.onChange}
+                                        imageUrl={field.value}
+                                        setFiles={setFiles}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
 
                 <FormField
                     control={form.control}
