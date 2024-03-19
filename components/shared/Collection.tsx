@@ -12,7 +12,7 @@ type CollectionProps = {
   limit: number;
   page: number | string;
   totalPages?: number;
-  UrlParamName?: string;
+  urlParamName?: string;
 };
 
 const Collection = ({
@@ -23,6 +23,7 @@ const Collection = ({
   limit,
   page,
   totalPages = 0,
+  urlParamName,
 }: CollectionProps) => {
   return (
     <>
