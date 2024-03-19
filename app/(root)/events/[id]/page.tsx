@@ -7,6 +7,7 @@ import { SearchParamProps } from "@/types/urlQuery";
 import Image from "next/image";
 
 import Collection from "@/components/shared/Collection";
+import CheckoutButton from "@/components/shared/CheckoutButton";
 
 const EventDetails = async ({
   params: { id },
@@ -55,7 +56,7 @@ const EventDetails = async ({
               </div>
             </div>
 
-            {/* <CheckoutButton event={event} /> */}
+            <CheckoutButton event={event} />
 
             <div className='flex flex-col gap-5'>
               <div className='flex gap-2 md:gap-3'>
@@ -65,7 +66,7 @@ const EventDetails = async ({
                   width={32}
                   height={32}
                 />
-                <div className='p-medium-16 lg:p-regular-20 flex flex-wrap items-center'>
+                <div className='p-medium-16 lg:p-regular-20 flex flex-col items-left'>
                   <p>
                     {formatDateTime(event.startDateTime).dateOnly} -{" "}
                     {formatDateTime(event.startDateTime).timeOnly}
