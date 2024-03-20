@@ -1,15 +1,24 @@
-import Collection from "@/components/shared/Collection";
-import { Button } from "@/components/ui/button";
 import { getAllEvents } from "@/lib/database/actions/event.actions";
+import { SearchParamProps } from "@/types/urlQuery";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function Home() {
+import CategoryFilter from "@/components/shared/CategoryFilter";
+import Collection from "@/components/shared/Collection";
+import Search from "@/components/shared/Search";
+import { Button } from "@/components/ui/button";
+
+export default async function Home({ searchParams }: SearchParamProps) {
+  const page = Number(searchParams?.page) || 1;
+  const searchText = (searchParams?.query as string) || "";
+  const category = (searchParams?.category as string) || "";
+  const ITEM_LIMIT = 6;
+
   const events = await getAllEvents({
-    query: "",
-    category: "",
-    limit: 6,
-    page: 1,
+    query: searchText,
+    category,
+    page,
+    limit: ITEM_LIMIT,
   });
 
   return (
@@ -43,7 +52,8 @@ export default async function Home() {
         className='wrapper my-8 flex flex-col gap-8 md:gap-12'>
         <h2 className='h2-bold'>Trusted by Thousands of Hosts</h2>
         <div className='flex w-full flex-col gap-5 md:flex-row'>
-          search category filter
+          <Search placeholder='Search' />
+          <CategoryFilter />
         </div>
 
         <Collection
@@ -51,8 +61,8 @@ export default async function Home() {
           emptyTitle='No Events Found'
           emptyStateSubtext='Please come back later'
           collectionType='All_Events'
-          limit={6}
-          page={1}
+          limit={ITEM_LIMIT}
+          page={page}
           totalPages={2}
         />
       </section>
