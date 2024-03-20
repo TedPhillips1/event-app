@@ -17,6 +17,8 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId as string;
 
+  const isInFuture = new Date(event.startDateTime) > new Date();
+
   const isEventCreator = userId === event.organizer._id.toString();
 
   return (
@@ -54,9 +56,13 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
           </div>
         )}
 
-        <p className='p-medium-16 text-grey-500'>
-          {formatDateTime(event.startDateTime).dateTime}
-        </p>
+        {isInFuture ? (
+          <p className='p-medium-16 text-grey-500'>
+            {formatDateTime(event.startDateTime).dateTime}
+          </p>
+        ) : (
+          <p className='p-medium-16 text-red-400'>Expired</p>
+        )}
 
         <Link href={`/events/${event._id}`}>
           <p className='p-medium-16 md:p-medium-20 line-clamp-2 flex-1 text-black'>

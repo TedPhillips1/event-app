@@ -63,7 +63,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
           collectionType='All_Events'
           limit={ITEM_LIMIT}
           page={page}
-          totalPages={2}
+          totalPages={events?.totalPages}
         />
       </section>
     </>

@@ -12,16 +12,20 @@ import { Button } from "@/components/ui/button";
 const ProfilePage = async ({ searchParams }: SearchParamProps) => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId as string;
-  
-  const ITEM_LIMIT = 6;
+
+  const ITEM_LIMIT = 3;
 
   const ordersPage = Number(searchParams?.ordersPage) || 1;
   const eventsPage = Number(searchParams?.eventsPage) || 1;
 
-  const orders = await getOrdersByUser({ userId, page: 1, limit: ITEM_LIMIT  });
+  const orders = await getOrdersByUser({ userId, page: 1, limit: ITEM_LIMIT });
 
   const orderedEvents = orders?.data.map((order: IOrder) => order.event) || [];
-  const organizedEvents = await getEventsByUser({ userId, page: 1, limit: ITEM_LIMIT });
+  const organizedEvents = await getEventsByUser({
+    userId,
+    page: 1,
+    limit: ITEM_LIMIT,
+  });
 
   return (
     <>
@@ -40,7 +44,7 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
           emptyTitle='No event tickets purchased yet'
           emptyStateSubtext='No worries - plenty of exciting events to explore!'
           collectionType='My_Tickets'
-          limit={3}
+          limit={ITEM_LIMIT}
           page={ordersPage}
           urlParamName='ordersPage'
           totalPages={orders?.totalPages}
