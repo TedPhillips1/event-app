@@ -18,12 +18,16 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
   const ordersPage = Number(searchParams?.ordersPage) || 1;
   const eventsPage = Number(searchParams?.eventsPage) || 1;
 
-  const orders = await getOrdersByUser({ userId, page: 1, limit: ITEM_LIMIT });
+  const orders = await getOrdersByUser({
+    userId,
+    page: ordersPage,
+    limit: ITEM_LIMIT,
+  });
 
   const orderedEvents = orders?.data.map((order: IOrder) => order.event) || [];
   const organizedEvents = await getEventsByUser({
     userId,
-    page: 1,
+    page: eventsPage,
     limit: ITEM_LIMIT,
   });
 
