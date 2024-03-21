@@ -110,13 +110,22 @@ export async function getAllEvents({
     const titleCondition = query
       ? { title: { $regex: query, $options: "i" } }
       : {};
+
     const categoryCondition = category
       ? await getCategoryByName(category)
       : null;
+
+    const dateCondition = {
+      startDateTime: {
+        $gt: new Date(),
+      },
+    };
+
     const conditions = {
       $and: [
         titleCondition,
         categoryCondition ? { category: categoryCondition._id } : {},
+        dateCondition,
       ],
     };
 
