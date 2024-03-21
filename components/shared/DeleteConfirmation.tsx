@@ -18,19 +18,29 @@ import { Button } from "../ui/button";
 
 import { deleteEvent } from "@/lib/database/actions/event.actions";
 
-export const DeleteConfirmation = ({ eventId }: { eventId: string }) => {
+export const DeleteConfirmation = ({
+  eventId,
+  isText = false,
+}: {
+  eventId: string;
+  isText?: boolean;
+}) => {
   const pathname = usePathname();
   let [isPending, startTransition] = useTransition();
 
   return (
     <Dialog>
       <DialogTrigger>
-        <Image
-          src='/assets/icons/delete.svg'
-          alt='edit'
-          width={24}
-          height={24}
-        />
+        {isText ? (
+          <p className='text-link text-red-400'>delete</p>
+        ) : (
+          <Image
+            src='/assets/icons/delete.svg'
+            alt='edit'
+            width={24}
+            height={24}
+          />
+        )}
       </DialogTrigger>
 
       <DialogContent className='bg-white'>

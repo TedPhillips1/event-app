@@ -10,6 +10,8 @@ import { auth } from "@clerk/nextjs";
 import Collection from "@/components/shared/Collection";
 import CheckoutButton from "@/components/shared/CheckoutButton";
 import { checkIfUserOrderedEvent } from "@/lib/database/actions/order.actions";
+import Link from "next/link";
+import { DeleteConfirmation } from "@/components/shared/DeleteConfirmation";
 
 const EventDetails = async ({
   params: { id },
@@ -46,9 +48,11 @@ const EventDetails = async ({
             className='h-full min-h-[300px] object-cover object-center'
           />
 
-          <div className='flex w-full flex-col gap-8 p-5 md:p-10'>
+          <div className='flex w-full flex-col gap-8 p-5 md:p-10 md:pr-0'>
             <div className='flex flex-col gap-6'>
-              <h2 className='h2-bold'>{event.title}</h2>
+              <div className='flex flex-col gap-2 justify-between'>
+                <h2 className='h2-bold'>{event.title}</h2>
+              </div>
 
               <div className='flex flex-col gap-3 sm:flex-row sm:items-center'>
                 <div className='flex gap-3'>
@@ -109,6 +113,13 @@ const EventDetails = async ({
               <p className='p-medium-16 lg:p-regular-18 truncate text-primary-500 underline'>
                 {event.url}
               </p>
+              <div className='w-full flex flex-row justify-end gap-4 items-center pl-1'>
+                <Link href={`/events/${event._id}/update`}>
+                  <p className='text-link text-primary-500'>edit</p>
+                </Link>
+
+                <DeleteConfirmation eventId={event._id} isText />
+              </div>
             </div>
           </div>
         </div>

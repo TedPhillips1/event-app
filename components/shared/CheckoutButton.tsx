@@ -20,7 +20,7 @@ const CheckoutButton = ({
   const hasEventFinished = new Date(event.endDateTime) < new Date();
   const viewerIsOwner = userId === event.organizer._id;
 
-  const buttonDisabled = viewerIsOwner || hasOrdered ? true : false;
+  const buttonDisabled = viewerIsOwner || hasOrdered;
 
   return (
     <div className='flex items-center gap-3'>
