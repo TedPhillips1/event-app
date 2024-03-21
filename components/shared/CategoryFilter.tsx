@@ -32,15 +32,26 @@ const CategoryFilter = () => {
   const onSelectCategory = (category: string) => {
     let newUrl = "";
 
+    const removePageFromSearchParams = (paramString: string) => {
+      const queryParams = paramString.split("&");
+      const filteredParams = queryParams.filter(
+        (param) => !param.startsWith("page=")
+      );
+      const resultString = filteredParams.join("&");
+
+      return resultString;
+    };
+    const params = removePageFromSearchParams(searchParams.toString());
+
     if (category && category !== "All") {
       newUrl = formUrlQuery({
-        params: searchParams.toString(),
+        params,
         key: "category",
         value: category,
       });
     } else {
       newUrl = removeKeysFromQuery({
-        params: searchParams.toString(),
+        params,
         keysToRemove: ["category"],
       });
     }
