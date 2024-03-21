@@ -18,18 +18,19 @@ const EventDetails = async ({
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId as string;
 
-  const event = await getEventById(id);
-  const ITEM_LIMIT = 3;
-
   const hasOrdered = (await checkIfUserOrderedEvent({
     eventId: id,
     userId,
   })) as boolean;
 
+  const event = await getEventById(id);
+  const ITEM_LIMIT = 3;
+  const page = (searchParams.page as string) || 1;
+
   const relatedEvents = await getRelatedEventsByCategory({
     categoryId: event.category._id,
     eventId: event._id,
-    page: searchParams.page as string,
+    page,
     limit: ITEM_LIMIT,
   });
 
@@ -121,7 +122,7 @@ const EventDetails = async ({
           emptyStateSubtext='Please come back later'
           collectionType='All_Events'
           limit={ITEM_LIMIT}
-          page={searchParams.page as string}
+          page={page}
           totalPages={relatedEvents?.totalPages}
         />
       </section>
