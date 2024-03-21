@@ -20,8 +20,6 @@ const CheckoutButton = ({
   const hasEventFinished = new Date(event.endDateTime) < new Date();
   const viewerIsOwner = userId === event.organizer._id;
 
-  console.log({ viewerIsOwner, hasOrdered });
-
   const buttonDisabled = viewerIsOwner || hasOrdered ? true : false;
 
   return (
