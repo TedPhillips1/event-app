@@ -2,6 +2,7 @@
 
 import Stripe from "stripe";
 import {
+  CheckIfUserOrderedEventParams,
   CheckoutOrderParams,
   CreateOrderParams,
   GetOrdersByEventParams,
@@ -162,6 +163,24 @@ export async function getOrdersByUser({
       data: JSON.parse(JSON.stringify(orders)),
       totalPages: Math.ceil(ordersCount / limit),
     };
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function checkIfUserOrderedEvent({
+  eventId,
+  userId,
+}: CheckIfUserOrderedEventParams) {
+  try {
+    await connectToDatabase();
+
+    const hasOrdered = await Order.find({ event: eventId, buyer: userId });
+    if (hasOrdered.length) {
+      return true;
+    }
+
+    return false;
   } catch (error) {
     handleError(error);
   }

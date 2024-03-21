@@ -6,7 +6,9 @@ import { checkoutOrder } from "@/lib/database/actions/order.actions";
 
 loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
+type CheckoutProps = { event: IEvent; userId: string; disabled: boolean };
+
+const Checkout = ({ event, userId, disabled }: CheckoutProps) => {
   const onCheckout = async () => {
     const order = {
       eventTitle: event.title,
@@ -35,7 +37,11 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
 
   return (
     <form action={onCheckout}>
-      <Button className='button sm:w-fit' type='submit' size='lg'>
+      <Button
+        className='button sm:w-fit'
+        type='submit'
+        size='lg'
+        disabled={disabled}>
         {event.isFree ? "Get Ticket" : "Buy Ticket"}
       </Button>
     </form>

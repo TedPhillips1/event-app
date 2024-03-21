@@ -5,16 +5,26 @@ import {
 import { formatDateTime } from "@/lib/utils";
 import { SearchParamProps } from "@/types/urlQuery";
 import Image from "next/image";
+import { auth } from "@clerk/nextjs";
 
 import Collection from "@/components/shared/Collection";
 import CheckoutButton from "@/components/shared/CheckoutButton";
+import { checkIfUserOrderedEvent } from "@/lib/database/actions/order.actions";
 
 const EventDetails = async ({
   params: { id },
   searchParams,
 }: SearchParamProps) => {
+  const { sessionClaims } = auth();
+  const userId = sessionClaims?.userId as string;
+
   const event = await getEventById(id);
   const ITEM_LIMIT = 3;
+
+  const hasOrdered = (await checkIfUserOrderedEvent({
+    eventId: id,
+    userId,
+  })) as boolean;
 
   const relatedEvents = await getRelatedEventsByCategory({
     categoryId: event.category._id,
@@ -58,7 +68,7 @@ const EventDetails = async ({
               </div>
             </div>
 
-            <CheckoutButton event={event} />
+            <CheckoutButton event={event} hasOrdered={hasOrdered} />
 
             <div className='flex flex-col gap-5'>
               <div className='flex gap-2 md:gap-3'>

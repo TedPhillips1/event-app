@@ -8,10 +8,21 @@ import React from "react";
 import { Button } from "../ui/button";
 import Checkout from "./Checkout";
 
-const CheckoutButton = ({ event }: { event: IEvent }) => {
+const CheckoutButton = ({
+  event,
+  hasOrdered,
+}: {
+  event: IEvent;
+  hasOrdered: boolean;
+}) => {
   const { user } = useUser();
   const userId = user?.publicMetadata.userId as string;
   const hasEventFinished = new Date(event.endDateTime) < new Date();
+  const viewerIsOwner = userId === event.organizer._id;
+
+  console.log({ viewerIsOwner, hasOrdered });
+
+  const buttonDisabled = viewerIsOwner || hasOrdered ? true : false;
 
   return (
     <div className='flex items-center gap-3'>
@@ -28,7 +39,7 @@ const CheckoutButton = ({ event }: { event: IEvent }) => {
           </SignedOut>
 
           <SignedIn>
-            <Checkout event={event} userId={userId} />
+            <Checkout event={event} userId={userId} disabled={buttonDisabled} />
           </SignedIn>
         </>
       )}
