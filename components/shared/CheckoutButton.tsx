@@ -10,17 +10,14 @@ import Checkout from "./Checkout";
 
 const CheckoutButton = ({
   event,
-  hasOrdered,
+  buttonDisabled,
 }: {
   event: IEvent;
-  hasOrdered: boolean;
+  buttonDisabled: boolean;
 }) => {
   const { user } = useUser();
   const userId = user?.publicMetadata.userId as string;
   const hasEventFinished = new Date(event.endDateTime) < new Date();
-  const viewerIsOwner = userId === event.organizer._id;
-
-  const buttonDisabled = viewerIsOwner || hasOrdered;
 
   return (
     <div className='flex items-center gap-3'>

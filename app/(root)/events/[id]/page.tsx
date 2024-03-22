@@ -20,11 +20,6 @@ const EventDetails = async ({
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId as string;
 
-  const hasOrdered = (await checkIfUserOrderedEvent({
-    eventId: id,
-    userId,
-  })) as boolean;
-
   const event = await getEventById(id);
   const ITEM_LIMIT = 3;
   const page = (searchParams.page as string) || 1;
@@ -35,6 +30,13 @@ const EventDetails = async ({
     page,
     limit: ITEM_LIMIT,
   });
+
+  const hasOrdered = (await checkIfUserOrderedEvent({
+    eventId: id,
+    userId,
+  })) as boolean;
+  const isEventOwner = userId === event.organizer._id;
+  const buttonDisabled = isEventOwner || hasOrdered;
 
   return (
     <>
@@ -73,7 +75,7 @@ const EventDetails = async ({
               </div>
             </div>
 
-            <CheckoutButton event={event} hasOrdered={hasOrdered} />
+            <CheckoutButton event={event} buttonDisabled={buttonDisabled} />
 
             <div className='flex flex-col gap-5'>
               <div className='flex gap-2 md:gap-3'>
@@ -113,13 +115,19 @@ const EventDetails = async ({
               <p className='p-medium-16 lg:p-regular-18 truncate text-primary-500 underline'>
                 {event.url}
               </p>
-              <div className='w-full flex flex-row justify-end gap-4 items-center pl-1'>
-                <Link href={`/events/${event._id}/update`}>
-                  <p className='text-link text-primary-500'>edit</p>
-                </Link>
+              {isEventOwner && (
+                <div className='w-full flex flex-row justify-end gap-4 items-center pl-1'>
+                  <Link href={`/events/${event._id}/update`}>
+                    <p className='text-link text-primary-500'>edit</p>
+                  </Link>
 
-                <DeleteConfirmation eventId={event._id} isText />
-              </div>
+                  <DeleteConfirmation
+                    eventId={event._id}
+                    newPathname='/#events'
+                    isText
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
